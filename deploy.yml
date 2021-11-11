@@ -1,0 +1,22 @@
+- hosts: all
+  become: true
+  tasks:
+   - name: Log into DockerHub
+     docker_login:
+      username: mukhesh
+      password: Mukesh$job
+      email: mukheshgoud40@gmail.com
+      
+   - name: Pull image from docker hub
+     command: docker pull mukhesh/pipeline:"{{buildNumber}}"
+
+   - name: Stop current running container
+     command: docker stop mukesh-c1
+     ignore_errors: yes
+
+   - name: Remove stopped container
+     command: docker rm mukesh-c1
+     ignore_errors: yes
+
+   - name: Run a container from the pulled image
+     command: docker run -d --name mukesh-c1 -p 80:8080 mukhesh/mukesh:"{{buildNumber}}"
