@@ -19,12 +19,8 @@ pipeline {
         sh 'mvn clean install package'
       }
     }   
-     stage('SonarQube Analysis') {
-       steps {
-         mvn sonar:sonar \
-  -Dsonar.host.url=http://sonarqube.mukesh.website \
-  -Dsonar.login=8c1d4173a23c20f7e3805402dce37a564a10064e
-       }
+     stage('SonarQube analysis') {
+    withSonarQubeEnv(credentialsId: '8c1d4173a23c20f7e3805402dce37a564a10064e', installationName: 'sonar') 
     }
     
     stage('building docker image from docker file by tagging') {
