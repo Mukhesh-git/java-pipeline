@@ -19,6 +19,12 @@ pipeline {
         sh 'mvn clean install package'
       }
     }   
+     stage('SonarQube Analysis') {
+        def mvnHome =  tool name: 'maven-3', type: 'maven'
+        withSonarQubeEnv('sonar') { 
+          sh "${mvnHome}/bin/mvn sonar:sonar"
+        }
+    }
     
     stage('building docker image from docker file by tagging') {
       steps {
