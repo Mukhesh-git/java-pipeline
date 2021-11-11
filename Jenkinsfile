@@ -53,6 +53,7 @@ pipeline {
       }   
     }  
   }
+   
   post {
     failure {
         mail to: 'mukheshgoud40@gmail.com',
@@ -64,5 +65,6 @@ pipeline {
              subject: "successful Pipeline:  ${env.BUILD_NUMBER}",
              body: "Your pipeline is success ${env.BUILD_URL}"
     }
+}
 }
 }
