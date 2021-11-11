@@ -20,10 +20,11 @@ pipeline {
       }
     }   
      stage('SonarQube Analysis') {
-        def mvnHome =  tool name: 'maven-3.8.3', type: 'maven'
-        withSonarQubeEnv('sonar') { 
-          sh "${mvnHome}/bin/mvn sonar:sonar"
-        }
+       steps {
+         mvn sonar:sonar \
+  -Dsonar.host.url=http://sonarqube.mukesh.website \
+  -Dsonar.login=8c1d4173a23c20f7e3805402dce37a564a10064e
+       }
     }
     
     stage('building docker image from docker file by tagging') {
