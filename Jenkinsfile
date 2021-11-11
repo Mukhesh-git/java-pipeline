@@ -1,6 +1,22 @@
 pipeline {
   agent any
+  tools {
+    maven 'maven'
+  }
   stages {
+   stage ('Initialize') {
+            steps {
+                sh '''
+                    M2_HOME=/opt/apache-maven-3.8.3
+                    M2=/opt/apache-maven-3.8.3/bin
+                    PATH=$PATH:$HOME/bin/:$JAVA_HOME:$M2:$M2_HOME
+                    export PATH
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    whoami
+                '''
+            }
+        }
     stage('cleaning package') {
       steps {
         sh 'mvn clean install package'
