@@ -19,15 +19,14 @@ pipeline {
         sh 'mvn clean install package'
       }
     }   
-       
+
     stage('SonarQube analysis') {
+     withSonarQubeEnv('sonar') 
       steps {
-        withSonarQubeEnv(credentialsId: '8c1d4173a23c20f7e3805402dce37a564a10064e', installationName: 'sonar')
-        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.8.3:sonar'
-    }
-    }
+      sh 'mvn clean package sonar:sonar'
+    } // submitted SonarQube taskId is automatically attached to the pipeline context
+  }
  
-    
     stage('building docker image from docker file by tagging') {
       steps {
         sh 'docker build -t mukhesh/pipeline:$BUILD_NUMBER .'
