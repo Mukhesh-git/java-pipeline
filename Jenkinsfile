@@ -23,12 +23,25 @@ pipeline {
       }
     }
 
-    stage('SonarQube analysis') {
+    stage('Sonar analaysis') {
       steps {
-       withSonarQubeEnv('sonar') 
-        sh 'mvn clean package sonar:sonar'
-    } // submitted SonarQube taskId is automatically attached to the pipeline context
-  }
+        sh '''
+             mvn sonar:sonar \
+              -Dsonar.host.url=http://www.mahendra.store \
+              -Dsonar.login=6b4f778db2af7b0d33d6b7f3b13abdbbef3a9db1
+           '''   
+      }
+    }
+ // stage('Push artifact to s3') {
+//   steps {
+//      sh 'aws s3 cp webapp/target/webapp.war s3://vaishu-s'
+//      }
+//    }
+//   stage('Deploy to tomcat') {
+//     steps {
+//        sh 'ansible-playbook deploy_new.yml'
+//      }
+//    }  
  
     stage('building docker image from docker file by tagging') {
       steps {
