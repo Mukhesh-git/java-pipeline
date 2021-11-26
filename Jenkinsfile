@@ -1,11 +1,14 @@
 pipeline {
   agent any
+  tools {
+    maven 'maven'
+  }
   stages {
    stage ('Initialize') {
             steps {
                 sh '''
-                    M2_HOME=/opt/apache-maven-3.8.3
-                    M2=/opt/apache-maven-3.8.3/bin
+                    M2_HOME=/opt/maven
+                    M2=/opt/maven/bin
                     PATH=$PATH:$HOME/bin/:$JAVA_HOME:$M2:$M2_HOME
                     export PATH
                     echo "PATH = ${PATH}"
@@ -14,11 +17,11 @@ pipeline {
                 '''
             }
         }
-    stage('cleaning package') {
+    stage('Build maven') {
       steps {
         sh 'mvn clean install package'
       }
-    }   
+    }
 
     stage('SonarQube analysis') {
       steps {
