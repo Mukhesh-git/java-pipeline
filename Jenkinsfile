@@ -17,11 +17,11 @@ pipeline {
 //              '''
 //             }
 //         }
-    stage('Build maven') {
-      steps {
-        sh 'mvn clean install package'
-      }
-    }
+//     stage('Build maven') {
+//       steps {
+//         sh 'mvn clean install package'
+//       }
+//     }
     stage('Sonar analaysis') {
       steps {
         sh '''
