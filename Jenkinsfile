@@ -54,7 +54,7 @@ pipeline {
           sh 'docker login --username="mukhesh" --password="${dockerHubPwd}"'
       }
     }  
-      
+  }  
   stage('pushing docker image to the docker hub with build number') {
       steps {
         sh 'docker push mukhesh/pipeline:$BUILD_NUMBER'
