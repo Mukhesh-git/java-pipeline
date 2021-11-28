@@ -4,7 +4,7 @@
    - name: Log into DockerHub
      docker_login:
       username: mukhesh
-      password: Mukesh@40
+      password: Mukhesh
       email: mukheshgoud40@gmail.com
       
    - name: Pull image from docker hub
