@@ -27,8 +27,8 @@ pipeline {
       steps {
         sh '''
              mvn sonar:sonar \
-              -Dsonar.host.url=http://www.mahendra.store \
-              -Dsonar.login=6b4f778db2af7b0d33d6b7f3b13abdbbef3a9db1
+               -Dsonar.host.url=http://sonarqube.mukesh.website \
+               -Dsonar.login=8fbbee6173cb3cbb2e3a7d8d962d212c4447b322
            '''   
       }
     }
