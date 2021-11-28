@@ -43,17 +43,17 @@ pipeline {
 //    }  
   stage('building docker image from docker file by tagging') {
     steps {
-      sh 'docker build -t mahendra96/sample:demo-$BUILD_NUMBER .'
+      sh 'docker build -t mukhesh/sample:java-$BUILD_NUMBER .'
     }   
   }
  stage('logging into docker hub') {
    steps {
-     sh 'docker login --username="mahendra96" --password="Mahendra@96"'
+     sh 'docker login --username="mukhesh" --password="Mukhesh@40"'
     }   
   }
 stage('pushing docker image to the docker hub with build number') {
   steps {
-    sh 'docker push mahendra96/sample:demo-$BUILD_NUMBER'
+    sh 'docker push mukhesh/sample:Java-$BUILD_NUMBER'
    }   
  }
  stage('deploying the docker image into EC2 instance and run the container') {
@@ -64,7 +64,7 @@ stage('pushing docker image to the docker hub with build number') {
 }
 post {
      always {
-       emailext to: 'annapureddymahendra@gmail.com',
+       emailext to: 'mukheshgoud40@gmail.com',
        attachLog: true, body: "Dear team pipeline is ${currentBuild.result} please check ${BUILD_URL} or PFA build log", compressLog: false,
        subject: "Jenkins Build Notification: ${JOB_NAME}-Build# ${BUILD_NUMBER} ${currentBuild.result}"
     }
