@@ -42,31 +42,41 @@ pipeline {
 //      }
 //    }  
   stage('building docker image from docker file by tagging') {
-    steps {
-      sh 'docker build -t mukhesh/sample:java-$BUILD_NUMBER .'
-    }   
+      steps {
+        sh 'docker build -t mukhesh/pipeline:$BUILD_NUMBER .'
+      }   
+    }
+   
+    stage('logging into docker hub') {
+      steps {
+        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
+          sh 'docker login -u "mukhesh" -p "${dockerHubPwd}"'
+      }
+    }
+      
+    }
+    stage('pushing docker image to the docker hub with build number') {
+      steps {
+        sh 'docker push mukhesh/pipeline:$BUILD_NUMBER'
+      }   
+    }
+     stage('deploying the docker image into EC2 instance and run the container') {
+      steps {
+        sh 'ansible-playbook deploy.yml --extra-vars="buildNumber=$BUILD_NUMBER"'
+      }   
+    }  
   }
- stage('logging into docker hub') {
-   steps {
-     sh 'docker login --username="mukhesh" --password="Mukhesh@40"'
-    }   
-  }
-stage('pushing docker image to the docker hub with build number') {
-  steps {
-    sh 'docker push mukhesh/sample:Java-$BUILD_NUMBER'
-   }   
- }
- stage('deploying the docker image into EC2 instance and run the container') {
-   steps {
-     sh 'ansible-playbook deploy.yml --extra-vars="buildNumber=$BUILD_NUMBER"'
-    }   
-  }  
-}
-post {
-     always {
-       emailext to: 'mukheshgoud40@gmail.com',
-       attachLog: true, body: "Dear team pipeline is ${currentBuild.result} please check ${BUILD_URL} or PFA build log", compressLog: false,
-       subject: "Jenkins Build Notification: ${JOB_NAME}-Build# ${BUILD_NUMBER} ${currentBuild.result}"
+   
+  post {
+    failure {
+        mail to: 'mukheshgoud40@gmail.com',
+             subject: "Failed Pipeline: ${BUILD_NUMBER}",
+             body: "Something is wrong with ${env.BUILD_URL}"
+    }
+     success {
+        mail to: 'mukheshgoud40@gmail.com',
+             subject: "successful Pipeline:  ${env.BUILD_NUMBER}",
+             body: "Your pipeline is success ${env.BUILD_URL}"
     }
 }
 }
