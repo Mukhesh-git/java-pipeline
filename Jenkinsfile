@@ -47,12 +47,14 @@ pipeline {
         sh 'docker build -t mukhesh/pipeline:$BUILD_NUMBER .'
       }   
     }
-   
+ 
   stage('logging into docker hub') {
-   steps {
-     sh 'docker login --username="mukhesh" --password="Mukhesh@40"'
-    }   
-  }
+      steps {
+        withCredentials([string(credentialsId:'docker-pwd', variable:'dockerHubPwd')]) {
+          sh 'docker login --username="mukhesh" --password="${dockerHubPwd}"'
+      }
+    }  
+      
   stage('pushing docker image to the docker hub with build number') {
       steps {
         sh 'docker push mukhesh/pipeline:$BUILD_NUMBER'
