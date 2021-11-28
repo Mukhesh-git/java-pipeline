@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  tools {
+    maven 'maven'
+  }
   stages {
    stage ('Initialize') {
             steps {
@@ -19,13 +22,12 @@ pipeline {
         sh 'mvn clean install package'
       }
     }
-
     stage('Sonar analaysis') {
       steps {
         sh '''
-             mvn sonar:sonar \
-               -Dsonar.host.url=http://sonarqube.mukesh.website \
-               -Dsonar.login=8fbbee6173cb3cbb2e3a7d8d962d212c4447b322
+            mvn sonar:sonar \
+              -Dsonar.host.url=http://sonarqube.mukesh.website \
+              -Dsonar.login=8fbbee6173cb3cbb2e3a7d8d962d212c4447b322
            '''   
       }
     }
@@ -39,44 +41,32 @@ pipeline {
 //        sh 'ansible-playbook deploy_new.yml'
 //      }
 //    }  
- 
-    stage('building docker image from docker file by tagging') {
-      steps {
-        sh 'docker build -t mukhesh/pipeline:$BUILD_NUMBER .'
-      }   
-    }
-   
-    stage('logging into docker hub') {
-      steps {
-        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
-          sh 'docker login -u "mukhesh" -p "${dockerHubPwd}"'
-      }
-    }
-      
-    }
-    stage('pushing docker image to the docker hub with build number') {
-      steps {
-        sh 'docker push mukhesh/pipeline:$BUILD_NUMBER'
-      }   
-    }
-     stage('deploying the docker image into EC2 instance and run the container') {
-      steps {
-        sh 'ansible-playbook deploy.yml --extra-vars="buildNumber=$BUILD_NUMBER"'
-      }   
-    }  
+  stage('building docker image from docker file by tagging') {
+    steps {
+      sh 'docker build -t mahendra96/sample:demo-$BUILD_NUMBER .'
+    }   
   }
-   
-  post {
-    failure {
-        mail to: 'mukheshgoud40@gmail.com',
-             subject: "Failed Pipeline: ${BUILD_NUMBER}",
-             body: "Something is wrong with ${env.BUILD_URL}"
-    }
-     success {
-        mail to: 'mukheshgoud40@gmail.com',
-             subject: "successful Pipeline:  ${env.BUILD_NUMBER}",
-             body: "Your pipeline is success ${env.BUILD_URL}"
+ stage('logging into docker hub') {
+   steps {
+     sh 'docker login --username="mahendra96" --password="Mahendra@96"'
+    }   
+  }
+stage('pushing docker image to the docker hub with build number') {
+  steps {
+    sh 'docker push mahendra96/sample:demo-$BUILD_NUMBER'
+   }   
+ }
+ stage('deploying the docker image into EC2 instance and run the container') {
+   steps {
+     sh 'ansible-playbook deploy.yml --extra-vars="buildNumber=$BUILD_NUMBER"'
+    }   
+  }  
+}
+post {
+     always {
+       emailext to: 'annapureddymahendra@gmail.com',
+       attachLog: true, body: "Dear team pipeline is ${currentBuild.result} please check ${BUILD_URL} or PFA build log", compressLog: false,
+       subject: "Jenkins Build Notification: ${JOB_NAME}-Build# ${BUILD_NUMBER} ${currentBuild.result}"
     }
 }
 }
-
