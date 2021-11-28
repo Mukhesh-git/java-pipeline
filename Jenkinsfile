@@ -1,27 +1,27 @@
 pipeline {
   agent any
-//   tools {
-//     maven 'maven'
-//   }
+   tools {
+     maven 'maven'
+   }
   stages {
-//      stage ('Initialize') {
-//        steps {
-//           sh '''
-//              M2_HOME=/opt/maven
-//              M2=/opt/maven/bin
-//              PATH=$PATH:$HOME/bin/:$JAVA_HOME:$M2:$M2_HOME
-//              export PATH
-//              echo "PATH = ${PATH}"
-//              echo "M2_HOME = ${M2_HOME}"
-//              whoami
-//              '''
-//             }
-//         }
-//     stage('Build maven') {
-//       steps {
-//         sh 'mvn clean install package'
-//       }
-//     }
+      stage ('Initialize') {
+        steps {
+           sh '''
+              M2_HOME=/opt/maven
+              M2=/opt/maven/bin
+              PATH=$PATH:$HOME/bin/:$JAVA_HOME:$M2:$M2_HOME
+              export PATH
+              echo "PATH = ${PATH}"
+              echo "M2_HOME = ${M2_HOME}"
+              whoami
+              '''
+             }
+         }
+     stage('Build maven') {
+       steps {
+        sh 'mvn clean install package'
+       }
+     }
     stage('Sonar analaysis') {
       steps {
         sh '''
@@ -32,7 +32,7 @@ pipeline {
       }
     }
  // stage('Push artifact to s3') {
-//   steps {
+//    steps {
 //      sh 'aws s3 cp webapp/target/webapp.war s3://vaishu-s'
 //      }
 //    }
