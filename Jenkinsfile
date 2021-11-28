@@ -41,21 +41,19 @@ pipeline {
 //        sh 'ansible-playbook deploy_new.yml'
 //      }
 //    }  
+    
   stage('building docker image from docker file by tagging') {
       steps {
         sh 'docker build -t mukhesh/pipeline:$BUILD_NUMBER .'
       }   
     }
    
-    stage('logging into docker hub') {
-      steps {
-        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
-          sh 'docker login -u "mukhesh" -p "${dockerHubPwd}"'
-      }
-    }
-      
-    }
-    stage('pushing docker image to the docker hub with build number') {
+  stage('logging into docker hub') {
+   steps {
+     sh 'docker login --username="mukhesh" --password="Mukhesh@40"'
+    }   
+  }
+  stage('pushing docker image to the docker hub with build number') {
       steps {
         sh 'docker push mukhesh/pipeline:$BUILD_NUMBER'
       }   
