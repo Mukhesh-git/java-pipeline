@@ -52,9 +52,9 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
           sh "docker login -u mukhesh -p ${dockerHubPwd}"
+       }
       }
     }  
-  }  
   stage('pushing docker image to the docker hub with build number') {
       steps {
         sh 'docker push mukhesh/pipeline:$BUILD_NUMBER'
